@@ -1,3 +1,12 @@
+Anggota
+
+- Resnu WIlmar Wibisana (00000059536)
+- Muhammad ALfi Tarish Hayadi (00000057839)
+- Jeffhenry (00000059441)
+- Juan Sebastian Pontoh (00000057332)
+
+
+
 Fitur – fitur :
 
 - Animasi click dan efek suara sesuai aksi 
