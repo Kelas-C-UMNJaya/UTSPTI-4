@@ -3,6 +3,23 @@
   src: url(assets/font/Minecraft.ttf);
 }
 
+img.pause {
+  width: 60px;
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  cursor: pointer;
+  -webkit-transition: 0.05s;
+  transition: 0.05s;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+}
+
+img.pause.click {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+}
+
 body {
   height: 100vh;
   width: 100vw;
@@ -229,4 +246,18 @@ p.alert.show {
 .container-fluid .row.justify-content-center .main .d-flex button.click {
   -webkit-transform: scale(1.1);
           transform: scale(1.1);
+}
+
+@media (max-width: 576px) {
+  p.alert {
+    width: 70vw;
+    left: 10px;
+    bottom: 30%;
+  }
+  img.pause {
+    right: 10px;
+  }
+  .container-fluid .exam {
+    width: 100%;
+  }
 }
