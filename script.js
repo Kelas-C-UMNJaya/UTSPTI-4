@@ -16,6 +16,7 @@ const buttonAction = document.querySelectorAll(".d-flex button");
 const pie = document.querySelector(".pie");
 const zzz = document.querySelector(".zzz");
 const learn = document.querySelector(".learn");
+const btPause = document.querySelector("img.pause");
 
 // Default
 let karakterSelect = 0;
@@ -30,6 +31,7 @@ let belajar = 0;
 let action = false;
 let win = false;
 let go = false;
+let pause = false;
 
 const imgSelectKarakter = [
   "flashy_flash.png",
@@ -55,6 +57,7 @@ const setBgSound = (path) => {
   if (path) {
     newSound = path.split("/");
     newSound = newSound[newSound.length - 1];
+
     if (!(soundElm == newSound)) {
       let audio = `
     <audio autoplay loop>
@@ -109,10 +112,26 @@ playButton.addEventListener("click", (e) => {
     setBgSound();
     document.querySelector(".select-karakter").classList.add("d-none");
     document.querySelector(".main").classList.remove("d-none");
+    document.querySelector("img.pause").classList.remove("d-none");
 
     document.querySelector(".playerName").innerHTML = playerName;
 
     gamePlay();
+  }
+});
+
+btPause.addEventListener("click", (e) => {
+  if (pause == false) {
+    pause = true;
+    action = true;
+    setBgSound("assets/song/pause.mp3");
+    btPause.src = "assets/btn-pause.png";
+  } else if (pause == true) {
+    pause = false;
+    action = false;
+    cekTime(hour);
+    setBackground(hour);
+    btPause.src = "assets/btn-play.png";
   }
 });
 
@@ -138,33 +157,36 @@ const gamePlay = () => {
     if (win == true) {
       clearInterval(timeStart);
     }
-    makan -= 4;
-    tidur -= 4;
-    main -= 4;
-    belajar -= 4;
 
-    if (makan < 0) {
-      makan = 0;
-      clearInterval(timeStart);
-      gameOver("Anda Kalah Karena Kelaparan");
+    if (!pause) {
+      makan -= 4;
+      tidur -= 4;
+      main -= 4;
+      belajar -= 4;
+
+      if (makan < 0) {
+        makan = 0;
+        clearInterval(timeStart);
+        gameOver("Anda Kalah Karena Kelaparan");
+      }
+      if (tidur < 0) {
+        tidur = 0;
+        clearInterval(timeStart);
+        gameOver("Anda Kalah Karena Kurang Tidur");
+      }
+      if (main < 0) {
+        main = 0;
+      }
+      if (belajar < 0) {
+        belajar = 0;
+        clearInterval(timeStart);
+        gameOver("Anda Kalah Karena Kurang Belajar");
+      }
+      indicatorSet("makan", makan);
+      indicatorSet("tidur", tidur);
+      indicatorSet("game", main);
+      indicatorSet("belajar", belajar);
     }
-    if (tidur < 0) {
-      tidur = 0;
-      clearInterval(timeStart);
-      gameOver("Anda Kalah Karena Kurang Tidur");
-    }
-    if (main < 0) {
-      main = 0;
-    }
-    if (belajar < 0) {
-      belajar = 0;
-      clearInterval(timeStart);
-      gameOver("Anda Kalah Karena Kurang Belajar");
-    }
-    indicatorSet("makan", makan);
-    indicatorSet("tidur", tidur);
-    indicatorSet("game", main);
-    indicatorSet("belajar", belajar);
   }, 60000);
 };
 
@@ -172,42 +194,45 @@ const startTime = () => {
   i = 0;
 
   let timeRun = setInterval(() => {
-    if (win == true) {
-      clearInterval(timeRun);
-    }
-    i++;
+    // if (win == true) {
+    //   clearInterval(timeRun);
+    // }
 
     if (win == true || go == true) {
       clearInterval(timeRun);
     }
 
-    if (i > 59) {
-      hour++;
+    if (!pause) {
+      i++;
 
-      if (!(win == true || go == true)) {
-        if (hour == 5) {
-          clickSound("berkokok");
+      if (i > 59) {
+        hour++;
+
+        if (!(win == true || go == true)) {
+          if (hour == 5) {
+            clickSound("berkokok");
+          }
         }
+
+        if (hour > 23) {
+          hour = 0;
+        }
+
+        cekTime(hour);
+        setBackground(hour);
+
+        i = 0;
       }
 
-      if (hour > 23) {
-        hour = 0;
+      minutes = i;
+
+      if (minutes < 10) {
+        minutes = "0" + i;
       }
 
-      cekTime(hour);
-      setBackground(hour);
-
-      i = 0;
+      watchHour.innerHTML = hour;
+      watchMinutes.innerHTML = minutes;
     }
-
-    minutes = i;
-
-    if (minutes < 10) {
-      minutes = "0" + i;
-    }
-
-    watchHour.innerHTML = hour;
-    watchMinutes.innerHTML = minutes;
   }, 1000);
 };
 
@@ -236,34 +261,36 @@ const cekAlert = () => {
       clearInterval(run);
     }
 
-    if (makan < 25) {
-      showMessage("alert-1", "Anda sedang kelaparan cobalah makan!");
+    if (!pause) {
+      if (makan < 25) {
+        showMessage("alert-1", "Anda sedang kelaparan cobalah makan!");
 
-      setTimeout(() => hideMessage("alert-1"), 3000);
-    }
+        setTimeout(() => hideMessage("alert-1"), 3000);
+      }
 
-    if (tidur < 25) {
-      showMessage(
-        "alert-2",
-        "Anda terlalu mengantuk cobalah tidur dan beristirahat!"
-      );
+      if (tidur < 25) {
+        showMessage(
+          "alert-2",
+          "Anda terlalu mengantuk cobalah tidur dan beristirahat!"
+        );
 
-      setTimeout(() => hideMessage("alert-2"), 3000);
-    }
+        setTimeout(() => hideMessage("alert-2"), 3000);
+      }
 
-    if (main < 25) {
-      showMessage("alert-3", "Anda terlalu bosan cobalah bermain!");
+      if (main < 25) {
+        showMessage("alert-3", "Anda terlalu bosan cobalah bermain!");
 
-      setTimeout(() => hideMessage("alert-3"), 3000);
-    }
+        setTimeout(() => hideMessage("alert-3"), 3000);
+      }
 
-    if (belajar < 25) {
-      showMessage(
-        "alert-4",
-        "Belajar Anda menurun, lakukan belajar agar tidak dikeluarkan dari kampus"
-      );
+      if (belajar < 25) {
+        showMessage(
+          "alert-4",
+          "Belajar Anda menurun, lakukan belajar agar tidak dikeluarkan dari kampus"
+        );
 
-      setTimeout(() => hideMessage("alert-4"), 3000);
+        setTimeout(() => hideMessage("alert-4"), 3000);
+      }
     }
   }, 20000);
 };
